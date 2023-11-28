@@ -1,0 +1,129 @@
+# This is the OpenAPI specification for your service. It is used to generate the client code.
+# To generate the server code, use the Gradle task `openApiGenerate`. The 
+# generated code will be placed in `build/generate-resources/main`.
+#
+# We will evaluate you based on how well you design your API.
+# 1. How well it follows REST principles.
+# 2. How easy it is to understand and use.
+#
+# References
+# 1. https://swagger.io/specification/
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: User Management's API
+  license:
+    name: SawitPRO
+servers:
+  - url: http://localhost
+paths:
+  /register:
+    post:
+      summary: Register a new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: failed to register the user because there is invalid request body (Bad request)
+  /login:
+    put:
+      summary: User login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: password is incorrect or phone number is not exist (Bad Request)
+  /user:
+    get:
+      summary: Get user information
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '403':
+          description: User cannot access this resource due to unauthorized token
+  /update:
+    patch:
+      summary: Update user full_name and phone_number information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: Successful update
+        '403':
+          description: User cannot access this resource due to unauthorized token
+        '409':
+          description: Phone number is already exist
+components:
+  schemas:
+    CreateUserRequest:
+      type: object
+      required:
+        - full_name
+        - phone_number
+        - password
+      properties:
+        full_name:
+          type: string
+        phone_number:
+          type: string
+        password:
+          type: string
+    UpdateUserRequest:
+      type: object
+      required:
+          - full_name
+          - phone_number
+      properties:
+          full_name:
+            type: string
+          phone_number:
+            type: string
+    LoginRequest:
+      type: object
+      required:
+        - phone_number
+        - password
+      properties:
+        phone_number:
+          type: string
+        password:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        id:
+          type: integer
+    UserResponse:
+        type: object
+        properties:
+          full_name:
+            type: string
+          phone_number:
+            type: string
